@@ -21,12 +21,11 @@ def is_order_single(x, y):
 
 def is_order(x):
     print(list(map(visu_card, x)))
-    x = list(map(lambda y: (y - 1) % 13, x))
-    bet_order = [is_order_single(u, d) for (u, d) in zip(x[:-1], x[1:])]
+    bet_order = [is_order_single(u, d) for (u, d) in zip(x[:-1], x[1:])]+ [True]
     for i in reversed(range(len(bet_order) - 1)):
         bet_order[i] = bet_order[i] and bet_order[i + 1]
-    print(bet_order + [True])
-    return bet_order + [True]
+    print(bet_order)
+    return bet_order
 
 
 class FreeCell(object):
@@ -130,8 +129,6 @@ class FreeCell(object):
                                     queue=new_queue))
                     else:
                         if is_order_single(target, move["value"]):
-                            print(move, visu_card(move["value"]),
-                                  visu_card(target))
                             new_queue = copy.deepcopy(self.queue)
                             new_queue[x].extend(new_queue[i][-j - 1:])
                             new_queue[i] = new_queue[i][:-j - 1]
@@ -156,8 +153,8 @@ class FreeCell(object):
         ])
         return hash(cell_code + heap_code + queue_code)
 
-
+# test code
 game_main = FreeCell()
 game_main.new_game()
 print(game_main)
-print(game_main.all_possible_step())
+game_main.all_possible_step()
