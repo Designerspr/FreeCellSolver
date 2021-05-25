@@ -73,40 +73,14 @@ class FreeCell(object):
     def __cmp__(self, other):
         return score(self.heaps) - score(other)
 
-    def all_possible_step_reg(self):
-        # 检查是否有列可以向堆顶加牌
-        for i, card in enumerate(self.cells):
-            for j, hnum in enumerate(self.heaps):
-                if card == hnum + 1:
-                    new_heap = self.heaps.copy()
-                    new_heap[j] += 1
-                    new_cells = self.cells.copy()
-                    new_cells[i] = 0
-                    return ([
-                        FreeCell(
-                            cells=new_cells, heaps=new_heap, queue=self.queue)
-                    ])
-        for i, lst in enumerate(self.queue):
-            if len(lst) > 0:
-                for j, hnum in enumerate(self.heaps):
-                    if lst[-1] == hnum + 1:
-                        new_queue = copy.deepcopy(self.queue)
-                        new_heap = self.heaps.copy()
-                        new_queue[i].pop()
-                        new_heap[j] += 1
-                        return ([
-                            FreeCell(
-                                cells=self.cells,
-                                heaps=new_heap,
-                                queue=new_queue)
-                        ])
-        return self.all_possible_step()
+    def get_fdeg(self):
+        return self.cells.count(0) + list(map(lambda x: len(x),
+                                              self.queue)).count(0) + 1
 
     def all_possible_step(self):
         # 构建所有可能的下一步
         # 计算自由度
-        fdeg = self.cells.count(0) + list(map(lambda x: len(x),
-                                              self.queue)).count(0) + 1
+        fdeg = self.get_fdeg()
         possible_next = []
         # 移动一张牌到Cell
         if self.cells.count(0) > 0:
@@ -120,7 +94,7 @@ class FreeCell(object):
                         FreeCell(
                             cells=new_cells, heaps=self.heaps,
                             queue=new_queue))
-        '''
+        
         # 检查是否有列可以向堆顶加牌
         for i, card in enumerate(self.cells):
             for j, hnum in enumerate(self.heaps):
@@ -145,7 +119,7 @@ class FreeCell(object):
                                 cells=self.cells,
                                 heaps=new_heap,
                                 queue=new_queue))
-        '''
+        
         # 比较复杂的部分：移动逻辑判定
         possible_move = []
         target_pos = []
